@@ -1,35 +1,40 @@
-import tkinter as tk
-from tkinter import filedialog, messagebox
+from customtkinter import *
+from PIL import Image
+#import backend_service
+#import threading 
+#import tkinter as tk
+#from tkinter import filedialog, messagebox
 from scapy.all import *
 import networkx as nx
 from bokeh.io import output_file, show
-from bokeh.models import Plot, Range1d, MultiLine, Circle, HoverTool, BoxZoomTool, ResetTool, LabelSet, ColumnDataSource
+from bokeh.models import Plot, Range1d, MultiLine, Scatter, HoverTool, BoxZoomTool, ResetTool, LabelSet, ColumnDataSource
 from bokeh.plotting import from_networkx
 from bokeh.palettes import Spectral4
 from bokeh.layouts import layout
 import webbrowser
 
-class PCAPAnalyzer(tk.Tk):
+class PCAPAnalyzer(CTk):
     def __init__(self):
         super().__init__()
 
-        self.title("PCAP Network Map Generator")
+        self.title("Netrino Wireshark IP Mapper")
+        self.iconbitmap("icon.ico")
         self.geometry("800x800")
 
-        self.open_button = tk.Button(self, text="Open PCAP", command=self.open_pcap)
+        self.open_button = CTkButton(self, text="Open PCAP", command=self.open_pcap)
         self.open_button.pack(pady=20)
 
-        self.generate_button = tk.Button(self, text="Generate Network Map", command=self.generate_map, state=tk.DISABLED)
+        self.generate_button = CTkButton(self, text="Generate Network Map", command=self.generate_map, state="disabled")
         self.generate_button.pack(pady=20)
         
-        self.exit_button = tk.Button(self, text="Exit", command=self.destroy)  # Exit button
+        self.exit_button = CTkButton(self, text="Exit", command=self.destroy)  # Exit button
         self.exit_button.pack(pady=20)  # Adjust padding as needed
 
 
     def open_pcap(self):
         self.pcap_path = filedialog.askopenfilename(title="Select PCAP File", filetypes=[("PCAP Files", "*.pcap;*.pcapng")])
         if self.pcap_path:
-            self.generate_button.config(state=tk.NORMAL)
+            self.generate_button.configure(state="normal")
 
     def generate_map(self):
         try:
@@ -59,7 +64,7 @@ class PCAPAnalyzer(tk.Tk):
         plot.title.text = "Network Map"
 
         graph_renderer = from_networkx(G_relabeled, pos_relabeled, scale=1, center=(0, 0))
-        graph_renderer.node_renderer.glyph = Circle(size=15, fill_color=Spectral4[0])
+        graph_renderer.node_renderer.glyph = Scatter(size=15, fill_color=Spectral4[0], marker="circle")
         graph_renderer.edge_renderer.glyph = MultiLine(line_alpha=0.8, line_width=1)
         plot.renderers.append(graph_renderer)
 
@@ -85,7 +90,7 @@ class PCAPAnalyzer(tk.Tk):
         output_file("network.html")
         show(plot_layout)  # This will save the plot to network.html and open it in the web browser
 
-        self.save_button = tk.Button(self, text="Save Network Map", command=lambda: self.save_map(plot))
+        self.save_button = CTkButton(self, text="Save Network Map", command=lambda: self.save_map(plot))
         self.save_button.pack(pady=20)
 
     def save_map(self, plot):
