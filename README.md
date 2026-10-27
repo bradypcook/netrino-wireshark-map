@@ -1,4 +1,4 @@
-# PCAPMap
+# Netrino
 
 PCAPMap is a graphical tool designed to visualize network traffic captured in PCAP files. By leveraging the power of Python and libraries such as Tkinter, Scapy, NetworkX, and Bokeh, PCAPMap provides an intuitive interface for users to load PCAP files, generate network maps, and interact with the visualized data.
 
